@@ -1,105 +1,118 @@
 /* -------------------------------------------------------------
-   BALRAM SIR TUITIONS - MODULAR INTERACTIVITY LOGIC
+   BALRAM SIR TUITIONS - REWRITTEN INTERACTIVE SCRIPT
    ------------------------------------------------------------- */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. IMAGE FALLBACK LOGIC
-    // Automatically replaces broken placeholders with beautiful gradients
-    const handleImageError = (img) => {
+
+    // 1. ROBUST IMAGE ERROR HANDLER
+    // Dynamically captures missing placeholders and replaces them with premium CSS gradients
+    const handleImgFallback = (img) => {
         const parent = img.parentElement;
         if (parent) {
-            // Apply beautiful premium background gradient fallback directly on container
             parent.style.background = 'linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%)';
             parent.style.position = 'relative';
             
-            // If image is a slide, ensure layout spacing remains correct
+            // Retain layout aspect ratios correctly
             if (img.classList.contains('slide-img')) {
                 parent.style.minHeight = '100vh';
             }
             
-            // Add decorative texture dynamically
-            const decorativeLine = document.createElement('div');
-            decorativeLine.style.position = 'absolute';
-            decorativeLine.style.top = '50%';
-            decorativeLine.style.left = '50%';
-            decorativeLine.style.transform = 'translate(-50%, -50%)';
-            decorativeLine.style.color = 'rgba(255,255,255,0.15)';
-            decorativeLine.style.fontSize = '4.5rem';
-            decorativeLine.style.fontWeight = '800';
-            decorativeLine.style.fontFamily = "'Outfit', sans-serif";
-            decorativeLine.textContent = 'BALRAM SIR';
-            parent.appendChild(decorativeLine);
+            // Inject beautiful decorative text block dynamically
+            const decorativeText = document.createElement('div');
+            decorativeText.style.position = 'absolute';
+            decorativeText.style.top = '50%';
+            decorativeText.style.left = '50%';
+            decorativeText.style.transform = 'translate(-50%, -50%)';
+            decorativeText.style.color = 'rgba(255, 255, 255, 0.12)';
+            decorativeText.style.fontSize = 'clamp(2.5rem, 6vw, 4.5rem)';
+            decorativeText.style.fontWeight = '800';
+            decorativeText.style.fontFamily = "'Outfit', sans-serif";
+            decorativeText.style.textTransform = 'uppercase';
+            decorativeText.style.letterSpacing = '4px';
+            decorativeText.style.pointerEvents = 'none';
+            
+            // Map text details based on image classes
+            if (img.classList.contains('slide-img')) {
+                decorativeText.textContent = 'Balram Sir Tuitions';
+            } else if (img.classList.contains('faculty-img')) {
+                decorativeText.textContent = 'Mentor Profile';
+            } else {
+                decorativeText.textContent = 'Academic Excellence';
+            }
+            
+            parent.appendChild(decorativeText);
         }
-        img.style.display = 'none'; // Hide the broken image icon safely
+        img.style.display = 'none'; // Safely hide broken image block
     };
 
-    // Bind error handlers to all existing images
+    // Bind error listeners to all image tags
     document.querySelectorAll('img').forEach((img) => {
-        img.addEventListener('error', () => handleImageError(img));
+        img.addEventListener('error', () => handleImgFallback(img));
         
-        // Handle images that might have already errored before DOMContentLoaded finishes
+        // Handle images that might have errored before initial binding script loads
         if (img.complete && img.naturalWidth === 0) {
-            handleImageError(img);
+            handleImgFallback(img);
         }
     });
 
-    // 2. STICKY HEADER & ACTIVE INDICATORS
+    // 2. STICKY HEADER & NAV ACTIVE LINKS INDICATOR
     const header = document.getElementById('header');
     const sections = document.querySelectorAll('section, footer');
     const navLinks = document.querySelectorAll('.nav-link');
+    const backToTopBtn = document.getElementById('backToTop');
 
-    const handleScroll = () => {
-        // Sticky Header scroll classes
-        if (window.scrollY > 50) {
+    const handleWindowScroll = () => {
+        // Sticky Header toggles
+        if (window.scrollY > 40) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
 
-        // Back to top button visibility threshold
-        const backToTopBtn = document.getElementById('backToTop');
-        if (window.scrollY > 400) {
+        // Back to top visibility threshold
+        if (window.scrollY > 450) {
             backToTopBtn.classList.add('visible');
         } else {
             backToTopBtn.classList.remove('visible');
         }
 
-        // Active page section tracking
-        let currentSectionId = '';
+        // Intersection link checking
+        let currentActiveSectionId = '';
         sections.forEach((section) => {
-            const sectionTop = section.offsetTop - 120;
+            const sectionTop = section.offsetTop - 150;
             const sectionHeight = section.offsetHeight;
             if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                currentSectionId = section.getAttribute('id');
+                currentActiveSectionId = section.getAttribute('id');
             }
         });
 
         navLinks.forEach((link) => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
+            if (link.getAttribute('href') === `#${currentActiveSectionId}`) {
                 link.classList.add('active');
             }
         });
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleWindowScroll, { passive: true });
 
-    // 3. MOBILE BURGER NAVIGATION MENU
+    // 3. MOBILE HAMBURGER MENU DRAWER
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
-    
+
     if (menuToggle && navMenu) {
         menuToggle.addEventListener('click', () => {
+            const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', !expanded);
             menuToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
-            
-            // Toggle hamburger layout
+
+            // Handle burger spans transformation
             const spans = menuToggle.querySelectorAll('span');
             if (menuToggle.classList.contains('active')) {
-                spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
                 spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
             } else {
                 spans[0].style.transform = 'none';
                 spans[1].style.opacity = '1';
@@ -107,9 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Close menu on link click (mobile views)
+        // Close mobile drawer on navigation click
         navMenu.querySelectorAll('a').forEach((link) => {
             link.addEventListener('click', () => {
+                menuToggle.setAttribute('aria-expanded', 'false');
                 menuToggle.classList.remove('active');
                 navMenu.classList.remove('active');
                 menuToggle.querySelectorAll('span').forEach((span) => span.style.transform = 'none');
@@ -118,88 +132,88 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. HERO SLIDER LOGIC (Exactly 3 Slides)
+    // 4. CINEMATIC HERO SLIDER (Exactly 3 Slides)
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.slider-dots .dot');
     const prevBtn = document.getElementById('sliderPrev');
     const nextBtn = document.getElementById('sliderNext');
-    let activeSlideIndex = 0;
-    let slideTimer = null;
-    const autoPlayDelay = 6000; // 6 seconds auto cycle
+    let currentSlideIndex = 0;
+    let sliderCycleTimer = null;
+    const slideDuration = 6000; // 6 seconds
 
-    const showSlide = (index) => {
+    const renderSlide = (index) => {
         slides.forEach((slide) => slide.classList.remove('active'));
         dots.forEach((dot) => dot.classList.remove('active'));
 
-        // Wrap indices correctly
-        if (index >= slides.length) activeSlideIndex = 0;
-        else if (index < 0) activeSlideIndex = slides.length - 1;
-        else activeSlideIndex = index;
+        // Handle boundaries cycle
+        if (index >= slides.length) currentSlideIndex = 0;
+        else if (index < 0) currentSlideIndex = slides.length - 1;
+        else currentSlideIndex = index;
 
-        slides[activeSlideIndex].classList.add('active');
-        dots[activeSlideIndex].classList.add('active');
+        slides[currentSlideIndex].classList.add('active');
+        dots[currentSlideIndex].classList.add('active');
     };
 
-    const startAutoPlay = () => {
-        stopAutoPlay();
-        slideTimer = setInterval(() => {
-            showSlide(activeSlideIndex + 1);
-        }, autoPlayDelay);
+    const activateSliderTimer = () => {
+        deactivateSliderTimer();
+        sliderCycleTimer = setInterval(() => {
+            renderSlide(currentSlideIndex + 1);
+        }, slideDuration);
     };
 
-    const stopAutoPlay = () => {
-        if (slideTimer) clearInterval(slideTimer);
+    const deactivateSliderTimer = () => {
+        if (sliderCycleTimer) clearInterval(sliderCycleTimer);
     };
 
-    // Bind button arrows click
+    // Button controls
     if (prevBtn && nextBtn) {
         prevBtn.addEventListener('click', () => {
-            showSlide(activeSlideIndex - 1);
-            startAutoPlay();
+            renderSlide(currentSlideIndex - 1);
+            activateSliderTimer();
         });
         nextBtn.addEventListener('click', () => {
-            showSlide(activeSlideIndex + 1);
-            startAutoPlay();
+            renderSlide(currentSlideIndex + 1);
+            activateSliderTimer();
         });
     }
 
-    // Bind dots click indicator
-    dots.forEach((dot, index) => {
+    // Dot paginations
+    dots.forEach((dot, idx) => {
         dot.addEventListener('click', () => {
-            showSlide(index);
-            startAutoPlay();
+            renderSlide(idx);
+            activateSliderTimer();
         });
     });
 
-    // Pause on hover
+    // Pause slider cycle on mouse hover
     const heroSection = document.getElementById('hero');
     if (heroSection) {
-        heroSection.addEventListener('mouseenter', stopAutoPlay);
-        heroSection.addEventListener('mouseleave', startAutoPlay);
-        
-        // Touch gestures support (Swipe left/right)
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
+        heroSection.addEventListener('mouseenter', deactivateSliderTimer);
+        heroSection.addEventListener('mouseleave', activateSliderTimer);
+
+        // Touch Swipe Gestures
+        let touchStartXCoord = 0;
+        let touchEndXCoord = 0;
+
         heroSection.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
+            touchStartXCoord = e.changedTouches[0].screenX;
         }, { passive: true });
 
         heroSection.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
+            touchEndXCoord = e.changedTouches[0].screenX;
+            evaluateTouchSwipe();
         }, { passive: true });
 
-        const handleSwipe = () => {
-            const swipeThreshold = 50; // pixels
-            if (touchStartX - touchEndX > swipeThreshold) {
-                // Swipe Left -> Next Slide
-                showSlide(activeSlideIndex + 1);
-                startAutoPlay();
-            } else if (touchEndX - touchStartX > swipeThreshold) {
-                // Swipe Right -> Prev Slide
-                showSlide(activeSlideIndex - 1);
-                startAutoPlay();
+        const evaluateTouchSwipe = () => {
+            const swipeDistanceLimit = 50; // pixels
+            if (touchStartXCoord - touchEndXCoord > swipeDistanceLimit) {
+                // Swipe Left -> Next
+                renderSlide(currentSlideIndex + 1);
+                activateSliderTimer();
+            } else if (touchEndXCoord - touchStartXCoord > swipeDistanceLimit) {
+                // Swipe Right -> Previous
+                renderSlide(currentSlideIndex - 1);
+                activateSliderTimer();
             }
         };
     }
@@ -207,84 +221,83 @@ document.addEventListener('DOMContentLoaded', () => {
     // Keyboard support
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
-            showSlide(activeSlideIndex - 1);
-            startAutoPlay();
+            renderSlide(currentSlideIndex - 1);
+            activateSliderTimer();
         } else if (e.key === 'ArrowRight') {
-            showSlide(activeSlideIndex + 1);
-            startAutoPlay();
+            renderSlide(currentSlideIndex + 1);
+            activateSliderTimer();
         }
     });
 
-    // Start auto cycle initially
-    startAutoPlay();
+    // Init slider timer cycle
+    activateSliderTimer();
 
-    // 5. SCROLL REVEAL OBSERVER
-    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-    const revealObserver = new IntersectionObserver((entries) => {
+    // 5. SCROLL ENTRY REVEALS OBSERVER
+    const revealTargets = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const scrollRevealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('revealed');
-                revealObserver.unobserve(entry.target); // Trigger only once
+                scrollRevealObserver.unobserve(entry.target);
             }
         });
     }, {
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
     });
 
-    revealElements.forEach((el) => revealObserver.observe(el));
+    revealTargets.forEach((target) => scrollRevealObserver.observe(target));
 
-    // 6. METRIC COUNT-UP STATS ANIMATION
-    const counterElements = document.querySelectorAll('.counter');
-    const startCounterAnimation = (element) => {
-        const target = parseInt(element.getAttribute('data-target'), 10);
-        const duration = 2000; // 2 seconds animation duration
-        const stepTime = Math.max(Math.floor(duration / target), 15);
-        let currentCount = 0;
+    // 6. METRICS COUNT-UP STATS
+    const counters = document.querySelectorAll('.counter');
+    const animateStat = (el) => {
+        const targetValue = parseInt(el.getAttribute('data-target'), 10);
+        const animationTime = 2000; // 2 seconds
+        const stepRate = Math.max(Math.floor(animationTime / targetValue), 12);
+        let count = 0;
 
         const timer = setInterval(() => {
-            currentCount += Math.ceil(target / (duration / stepTime));
-            if (currentCount >= target) {
-                element.textContent = target;
+            count += Math.ceil(targetValue / (animationTime / stepRate));
+            if (count >= targetValue) {
+                el.textContent = targetValue;
                 clearInterval(timer);
             } else {
-                element.textContent = currentCount;
+                el.textContent = count;
             }
-        }, stepTime);
+        }, stepRate);
     };
 
-    const counterObserver = new IntersectionObserver((entries) => {
+    const countersObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                startCounterAnimation(entry.target);
-                counterObserver.unobserve(entry.target);
+                animateStat(entry.target);
+                countersObserver.unobserve(entry.target);
             }
         });
     }, {
         threshold: 0.5
     });
 
-    counterElements.forEach((counter) => counterObserver.observe(counter));
+    counters.forEach((counter) => countersObserver.observe(counter));
 
-    // 7. FAQ ACCORDION LOGIC
+    // 7. FAQ ACCORDION - COLLAPSE OTHERS LOGIC
     const faqItems = document.querySelectorAll('.faq-item');
     faqItems.forEach((item) => {
         const trigger = item.querySelector('.faq-trigger');
         const panel = item.querySelector('.faq-panel');
 
         trigger.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
+            const isCurrentlyActive = item.classList.contains('active');
 
-            // Close all items
+            // Close all open sections
             faqItems.forEach((otherItem) => {
                 otherItem.classList.remove('active');
                 otherItem.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
                 otherItem.querySelector('.faq-panel').style.maxHeight = '0';
-                otherItem.querySelector('.faq-panel').style.paddingTop = '0';
             });
 
-            // Toggle selected item
-            if (!isActive) {
+            // If not active before, toggle active state
+            if (!isCurrentlyActive) {
                 item.classList.add('active');
                 trigger.setAttribute('aria-expanded', 'true');
                 panel.style.maxHeight = `${panel.scrollHeight}px`;
@@ -292,11 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 8. ADMISSION FORM INLINE VALIDATIONS & SUBMIT
+    // 8. ADMISSION FORM INLINE VALS & REDIRECTION
     const enquiryForm = document.getElementById('enquiryForm');
     const successAlert = document.getElementById('successAlert');
 
-    const inputs = {
+    const formFields = {
         studentName: document.getElementById('studentName'),
         parentName: document.getElementById('parentName'),
         mobileNumber: document.getElementById('mobileNumber'),
@@ -307,162 +320,156 @@ document.addEventListener('DOMContentLoaded', () => {
         time: document.getElementById('time')
     };
 
-    // Helper to display errors inline
-    const showError = (fieldKey, message) => {
-        const errorSpan = document.getElementById(`${fieldKey}Error`);
-        if (errorSpan) {
-            errorSpan.textContent = message;
+    const displayFieldError = (fieldKey, msg) => {
+        const errorLabel = document.getElementById(`${fieldKey}Error`);
+        if (errorLabel) {
+            errorLabel.textContent = msg;
         }
-        if (inputs[fieldKey]) {
-            inputs[fieldKey].style.borderColor = '#e53e3e';
-        }
-    };
-
-    // Helper to clear error logs
-    const clearError = (fieldKey) => {
-        const errorSpan = document.getElementById(`${fieldKey}Error`);
-        if (errorSpan) {
-            errorSpan.textContent = '';
-        }
-        if (inputs[fieldKey]) {
-            inputs[fieldKey].style.borderColor = 'rgba(0,0,0,0.15)';
+        if (formFields[fieldKey]) {
+            formFields[fieldKey].style.borderColor = '#e53e3e';
+            formFields[fieldKey].style.boxShadow = '0 0 0 2px rgba(229, 62, 62, 0.1)';
         }
     };
 
-    // Setup input listeners to clear errors on user correction
-    Object.keys(inputs).forEach((key) => {
-        if (inputs[key]) {
-            const eventName = inputs[key].tagName === 'SELECT' ? 'change' : 'input';
-            inputs[key].addEventListener(eventName, () => clearError(key));
+    const clearFieldError = (fieldKey) => {
+        const errorLabel = document.getElementById(`${fieldKey}Error`);
+        if (errorLabel) {
+            errorLabel.textContent = '';
+        }
+        if (formFields[fieldKey]) {
+            formFields[fieldKey].style.borderColor = 'rgba(0,0,0,0.15)';
+            formFields[fieldKey].style.boxShadow = 'none';
+        }
+    };
+
+    // Bind real-time change events to clear input styles
+    Object.keys(formFields).forEach((key) => {
+        if (formFields[key]) {
+            const eventType = formFields[key].tagName === 'SELECT' ? 'change' : 'input';
+            formFields[key].addEventListener(eventType, () => clearFieldError(key));
         }
     });
 
-    // Validation runner
-    const validateForm = () => {
-        let isValid = true;
+    const performValidation = () => {
+        let isSuccess = true;
 
-        // Student Name Check
-        if (!inputs.studentName.value.trim()) {
-            showError('studentName', 'Student Name is required');
-            isValid = false;
+        // Student Name
+        if (!formFields.studentName.value.trim()) {
+            displayFieldError('studentName', 'Student Name is required');
+            isSuccess = false;
         } else {
-            clearError('studentName');
+            clearFieldError('studentName');
         }
 
-        // Parent Name Check
-        if (!inputs.parentName.value.trim()) {
-            showError('parentName', 'Parent Name is required');
-            isValid = false;
+        // Parent Name
+        if (!formFields.parentName.value.trim()) {
+            displayFieldError('parentName', 'Parent Name is required');
+            isSuccess = false;
         } else {
-            clearError('parentName');
+            clearFieldError('parentName');
         }
 
-        // Mobile Number Check
-        const mobileVal = inputs.mobileNumber.value.trim();
-        const numberPattern = /^[0-9]+$/;
-        if (!mobileVal) {
-            showError('mobileNumber', 'Mobile Number is required');
-            isValid = false;
-        } else if (!numberPattern.test(mobileVal)) {
-            showError('mobileNumber', 'Only numeric digits allowed');
-            isValid = false;
-        } else if (mobileVal.length !== 10) {
-            showError('mobileNumber', 'Indian Mobile numbers must be exactly 10 digits');
-            isValid = false;
+        // Mobile Number (Exactly 10 digits numeric)
+        const mobileText = formFields.mobileNumber.value.trim();
+        const numericPattern = /^[0-9]+$/;
+        if (!mobileText) {
+            displayFieldError('mobileNumber', 'Mobile Number is required');
+            isSuccess = false;
+        } else if (!numericPattern.test(mobileText)) {
+            displayFieldError('mobileNumber', 'Only numeric digits are allowed');
+            isSuccess = false;
+        } else if (mobileText.length !== 10) {
+            displayFieldError('mobileNumber', 'Mobile number must be exactly 10 digits');
+            isSuccess = false;
         } else {
-            clearError('mobileNumber');
+            clearFieldError('mobileNumber');
         }
 
         // Dropdowns checks
-        const dropdowns = ['board', 'studentClass', 'subject', 'batch', 'time'];
-        dropdowns.forEach((dropdown) => {
-            if (!inputs[dropdown].value) {
-                showError(dropdown, `Please select a valid option`);
-                isValid = false;
+        const dropdownKeys = ['board', 'studentClass', 'subject', 'batch', 'time'];
+        dropdownKeys.forEach((key) => {
+            if (!formFields[key].value) {
+                displayFieldError(key, 'Please select a valid option');
+                isSuccess = false;
             } else {
-                clearError(dropdown);
+                clearFieldError(key);
             }
         });
 
-        return isValid;
+        return isSuccess;
     };
 
-    // Form submission interceptor
     if (enquiryForm) {
         enquiryForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            if (!validateForm()) {
-                // Focus on first invalid element
-                const firstInvalid = Object.keys(inputs).find((key) => {
-                    const errorSpan = document.getElementById(`${key}Error`);
-                    return errorSpan && errorSpan.textContent !== '';
+            if (!performValidation()) {
+                // Focus first invalid element automatically
+                const invalidKey = Object.keys(formFields).find((key) => {
+                    const err = document.getElementById(`${key}Error`);
+                    return err && err.textContent !== '';
                 });
-                if (firstInvalid && inputs[firstInvalid]) {
-                    inputs[firstInvalid].focus();
+                if (invalidKey && formFields[invalidKey]) {
+                    formFields[invalidKey].focus();
                 }
                 return;
             }
 
-            // Capture field variables
-            const student = inputs.studentName.value.trim();
-            const parent = inputs.parentName.value.trim();
-            const mobile = inputs.mobileNumber.value.trim();
-            const email = document.getElementById('email').value.trim() || 'Not Provided';
-            const boardSelected = inputs.board.value;
-            const classSelected = inputs.studentClass.value;
-            const subjectSelected = inputs.subject.value;
-            const batchSelected = inputs.batch.value;
-            const timeSelected = inputs.time.value;
-            const userMsg = document.getElementById('message').value.trim() || 'No additional message';
+            // Gather values
+            const nameStudent = formFields.studentName.value.trim();
+            const nameParent = formFields.parentName.value.trim();
+            const phoneVal = formFields.mobileNumber.value.trim();
+            const mailVal = document.getElementById('email').value.trim() || 'Not Provided';
+            const boardVal = formFields.board.value;
+            const classVal = formFields.studentClass.value;
+            const subjectVal = formFields.subject.value;
+            const batchVal = formFields.batch.value;
+            const timeVal = formFields.time.value;
+            const msgVal = document.getElementById('message').value.trim() || 'No custom requirements';
 
-            // Show success modal feedback screen
+            // Show success modal overlay
             successAlert.classList.add('active');
 
-            // Construct Whatsapp Admit enquiry format message text details
-            const whatsappText = 
+            // Format WhatsApp Message details
+            const messageTemplate = 
 `*ADMISSION ENQUIRY*
 *Balram Sir Tuitions*
 ==========================
 
-*Student Details:*
-• Name: ${student}
-• Class: ${classSelected}
-• Board: ${boardSelected}
-• Subject Interest: ${subjectSelected}
+*Student Information:*
+• Student Name: ${nameStudent}
+• Class: ${classVal}
+• Board: ${boardVal}
+• Subject: ${subjectVal}
 
-*Parent Details:*
-• Parent Name: ${parent}
-• Mobile Number: +91 ${mobile}
-• Email: ${email}
+*Parent Information:*
+• Parent Name: ${nameParent}
+• Mobile Number: +91 ${phoneVal}
+• Email: ${mailVal}
 
-*Class Preferences:*
-• Batch Program: ${batchSelected}
-• Time Slot: ${timeSelected}
+*Academic Preferences:*
+• Batch Option: ${batchVal}
+• Time Slot: ${timeVal}
 
-*Message / Goals:*
-"${userMsg}"
+*Custom Message:*
+"${msgVal}"
 
 ==========================
-Please schedule my demo sessions. Thank you!`;
+Please schedule my trial demo sessions. Thank you!`;
 
-            const encodedMessage = encodeURIComponent(whatsappText);
-            // Form redirects target recipient WhatsApp number: +91 89551795790 (cleaned target: 9189551795790)
-            const targetWhatsappUrl = `https://wa.me/9189551795790?text=${encodedMessage}`;
+            const encodedQuery = encodeURIComponent(messageTemplate);
+            // Helpline target whatsapp redirects: +91 8955179570 (Cleaned recipient: 918955179570)
+            const targetUrl = `https://wa.me/918955179570?text=${encodedQuery}`;
 
-            // Redirect delay after success popup renders
             setTimeout(() => {
-                window.open(targetWhatsappUrl, '_blank');
-                
-                // Reset form fields state
+                window.open(targetUrl, '_blank');
                 enquiryForm.reset();
                 successAlert.classList.remove('active');
             }, 1800);
         });
     }
 
-    // 9. BACK TO TOP BUTTON LOGIC
-    const backToTopBtn = document.getElementById('backToTop');
+    // 9. BACK TO TOP SCROLL ACTION
     if (backToTopBtn) {
         backToTopBtn.addEventListener('click', () => {
             window.scrollTo({
