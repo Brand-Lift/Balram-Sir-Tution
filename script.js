@@ -1,11 +1,11 @@
-/* -------------------------------------------------------------
-   BALRAM SIR TUITIONS - PREMIUM MODULAR INTERACTIVE SCRIPT
-   ------------------------------------------------------------- */
+/* ==========================================================================
+   BALRAM SIR TUITIONS - INTERACTIVE FRONTEND APPLICATION LOGIC
+   ========================================================================== */
 
 (function () {
     'use strict';
 
-    // Global application controller namespace
+    // Application Namespace Controller Object
     const TuitionsApp = {
         init() {
             this.initScrollProgress();
@@ -21,8 +21,8 @@
             this.initBackToTop();
         },
 
-        // 1. SCROLL PROGRESS INDICATOR
-        // Tracks user scroll heights and updates the top loading progress bar
+        // 1. SCROLL PROGRESS BAR INDICATOR
+        // Dynamically updates progress bar widths based on viewport offset heights
         initScrollProgress() {
             const progressBar = document.getElementById('scrollIndicator');
             if (!progressBar) return;
@@ -37,8 +37,8 @@
             window.addEventListener('scroll', updateProgressBar, { passive: true });
         },
 
-        // 2. STICKY HEADER & SCROLL SHRINK
-        // Shrinks header heights and tracks active sections to update navbar indicator links
+        // 2. STICKY HEADER & ACTIVE SECTION HIGHLIGHTER
+        // Toggles solid background shadows and updates current active class on links
         initStickyHeader() {
             const header = document.getElementById('header');
             const sections = document.querySelectorAll('section, footer');
@@ -46,14 +46,14 @@
             if (!header) return;
 
             const handleHeaderScroll = () => {
-                // Header shrink trigger
+                // Header shrink triggers
                 if (window.scrollY > 50) {
                     header.classList.add('scrolled');
                 } else {
                     header.classList.remove('scrolled');
                 }
 
-                // Navbar Active section intersection tracking
+                // Active section highlighter based on layout coordinates
                 let currentSectionId = '';
                 sections.forEach((section) => {
                     const sectionTop = section.offsetTop - 140;
@@ -74,8 +74,8 @@
             window.addEventListener('scroll', handleHeaderScroll, { passive: true });
         },
 
-        // 3. MOBILE HAMBURGER DRAWER & BODY SCROLL LOCK
-        // Toggles mobile menu drawer, manages ARIA state, and locks body scrolling when active
+        // 3. MOBILE MENU DRAWER & BODY SCROLL LOCK
+        // Toggles mobile drawers active states and applies background body freeze classes
         initMobileNavigation() {
             const menuToggle = document.getElementById('menuToggle');
             const navMenu = document.getElementById('navMenu');
@@ -231,7 +231,7 @@
         },
 
         // 5. SCROLL REVEAL OBSERVER
-        // Staggers page section elements fade-ins using IntersectionObservers
+        // Progressive transitions for layout cards based on viewport coordinates
         initScrollReveal() {
             const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
             
@@ -239,7 +239,7 @@
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('revealed');
-                        observer.unobserve(entry.target); // Unbind to optimize resources
+                        observer.unobserve(entry.target);
                     }
                 });
             };
@@ -252,8 +252,8 @@
             revealElements.forEach(el => revealObserver.observe(el));
         },
 
-        // 6. STATISTICS COUNTER
-        // Animates highlights counter figures when elements scroll into active viewports
+        // 6. STATISTICS COUNTERS INTERPOLATOR
+        // Counts figures when numeric cards intersect viewport centers
         initStatCounters() {
             const counterElements = document.querySelectorAll('.counter');
             
@@ -288,8 +288,8 @@
             counterElements.forEach(counter => counterObserver.observe(counter));
         },
 
-        // 7. ACCORDION FAQ CONTROLLER
-        // Collapse other open panels, animates panel heights via scrollHeight bounds
+        // 7. FAQ ACCORDION TRANSITIONS
+        // Collapses active FAQs when a new card trigger is clicked
         initAccordionFAQs() {
             const faqItems = document.querySelectorAll('.faq-item');
 
@@ -318,7 +318,8 @@
             });
         },
 
-        // 8. ADMISSION FORM & VALIDATION LOGIC
+        // 8. ADMISSION FORM ENQUIRY & VALIDATOR
+        // Direct Indian digits validator, active email syntax checks, and encoded redirects
         initFormValidation() {
             const enquiryForm = document.getElementById('enquiryForm');
             const successAlert = document.getElementById('successAlert');
@@ -343,7 +344,6 @@
                 if (fields[fieldKey]) {
                     fields[fieldKey].style.borderColor = '#ef4444';
                     fields[fieldKey].classList.add('shake-error');
-                    // Reset shake animation class after completion
                     setTimeout(() => {
                         fields[fieldKey].classList.remove('shake-error');
                     }, 400);
@@ -356,7 +356,7 @@
                     errorSpan.textContent = '';
                 }
                 if (fields[fieldKey]) {
-                    fields[fieldKey].style.borderColor = 'rgba(11,30,54,0.15)';
+                    fields[fieldKey].style.borderColor = 'rgba(10,25,47,0.15)';
                 }
             };
 
@@ -488,7 +488,7 @@ Please schedule my trial demo sessions. Thank you!`;
         },
 
         // 9. THREE-IMAGE GALLERY LIGHTBOX PREVIEW
-        // Handles click zooms, image arrows, and closing of modal layers
+        // Permits ESC keyboard closes and next/prev image selections inside modal views
         initLightboxGallery() {
             const galleryItems = document.querySelectorAll('.gallery-item-three');
             const lightbox = document.getElementById('lightboxOverlay');
@@ -525,7 +525,7 @@ Please schedule my trial demo sessions. Thank you!`;
                 lightboxCaption.textContent = imagesData[currentImgIndex].caption;
                 lightbox.classList.add('active');
                 lightbox.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('menu-open'); // Prevent page scroll shifts
+                document.body.classList.add('menu-open');
             };
 
             const closeLightbox = () => {
@@ -568,13 +568,13 @@ Please schedule my trial demo sessions. Thank you!`;
         },
 
         // 10. IMAGE LOAD ERROR FALLBACKS
-        // Dynamically replaces broken paths with stylish gradients and text overrides
+        // Catches missing directories and renders clean CSS gradients with overlays
         initImageFallbacks() {
             const processBrokenImg = (img) => {
                 const parent = img.parentElement;
                 if (!parent) return;
 
-                parent.style.background = 'linear-gradient(135deg, #0b1e36 0%, #1e40af 100%)';
+                parent.style.background = 'linear-gradient(135deg, #0a192f 0%, #004ecc 100%)';
                 parent.style.position = 'relative';
 
                 // Prevent layout shifts during loading
@@ -616,8 +616,8 @@ Please schedule my trial demo sessions. Thank you!`;
             });
         },
 
-        // 11. FLOATING ACTION CONTROLS
-        // Handles scrolling thresholds for back-to-top and floating calls buttons visibility
+        // 11. BACK TO TOP CONTROLLERS
+        // Triggers visibility changes for float back buttons on scroll y coordinates
         initBackToTop() {
             const backToTopBtn = document.getElementById('backToTop');
             const floatingCall = document.getElementById('floatingCall');
@@ -629,7 +629,6 @@ Please schedule my trial demo sessions. Thank you!`;
                     if (floatingCall) floatingCall.style.transform = 'scale(1)';
                 } else {
                     backToTopBtn.classList.remove('visible');
-                    // Hide call helper at the top scroll section (keeps layout cleaner)
                     if (floatingCall && window.innerWidth < 480) {
                         floatingCall.style.transform = 'scale(0)';
                     }
@@ -647,7 +646,7 @@ Please schedule my trial demo sessions. Thank you!`;
         }
     };
 
-    // Launch application namespace logic
+    // Initialize application execution
     TuitionsApp.init();
 
 })();
